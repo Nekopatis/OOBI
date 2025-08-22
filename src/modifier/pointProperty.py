@@ -63,7 +63,12 @@ class Point2D(SupportsLerp):
     def rnd_AutoCircle() -> "Point2D" :
         x, y = rnd_circle()
         return Point2D(x, y)
-
+    
+    @staticmethod
+    def splitSimplePoints(points : List["Point2D"]) -> tuple[List[float], List[float]]:
+        x = [coord for coord, _ in points]
+        y = [coord for  _, coord in points]
+        return x, y
 
 
 
@@ -131,7 +136,7 @@ class PointProperty(PropertyModifier):
         )
 
     @staticmethod
-    def Scatter(properties : List["PointProperty"]) -> tuple[List[Point2D], List[Point2D], List[Point2D], List[float]]:
+    def scatter(properties : List["PointProperty"]) -> tuple[List[Point2D], List[Point2D], List[Point2D], List[float]]:
         centers : List[Point2D] = []
         directions : List[Point2D] = []
         finals : List[Point2D] = []
@@ -144,3 +149,9 @@ class PointProperty(PropertyModifier):
             coefs.append(property.coef)
 
         return centers, directions, finals, coefs 
+    
+
+    @staticmethod
+    def getPointMember(properties : List["PointProperty"], memberName : str) -> List[Point2D] : 
+        points = [getattr(pointProperty, memberName) for pointProperty in properties]
+        return [cast(Point2D, point) for point in points]

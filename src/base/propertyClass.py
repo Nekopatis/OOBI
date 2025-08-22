@@ -1,6 +1,5 @@
-from typing import List, Sequence
-from tool import ClassLerp, LERP, PropertyModifier, lerpToWeightedMean, weightedMean
-from typing import cast
+from typing import List, Sequence, cast
+from .tool import ClassLerp, LERP, PropertyModifier, lerpToWeightedMean, weightedMean
 
 class ValueProperty(ClassLerp):
     def __init__(self, baseValue : float, modifier : PropertyModifier) :
@@ -33,7 +32,6 @@ class ValueProperty(ClassLerp):
 
     @staticmethod
     def weightedMean(values : Sequence[ClassLerp], weights : List[float]) -> ClassLerp :
-        
         assert all([value.__class__ == ValueProperty for value in values]), "Error in ValueProperty weightedMean. Not all value are a ValueProperty."
         valuesProperties : List[ValueProperty] = [cast(ValueProperty, value) for value in values]
 
@@ -63,11 +61,27 @@ class FullProperty(ClassLerp) :
         self.propertyY.quickPrint()
         print()
 
+    def getValues(self) -> tuple[float, float] :
+        return self.propertyX.transformValue(), self.propertyY.transformValue()
+
+
+
     @staticmethod
     def lerp(val0 : ClassLerp, val1 : ClassLerp, coef : float) -> ClassLerp :
         return lerpToWeightedMean(val0, val1, coef, FullProperty.weightedMean)
 
-
     @staticmethod
     def weightedMean(values : Sequence[ClassLerp], weights : List[float]) -> ClassLerp :
-        return weightedMean(values, weights)
+        assert all([value.__class__ == FullProperty for value in values]), "Error in FullProperty weightedMean. Not all value are a FullProperty."
+        valuesProperties : List[FullProperty] = [cast(FullProperty, value) for value in values]
+
+        propertyX : ValueProperty = cast(ValueProperty, ValueProperty.weightedMean([value.propertyX for value in valuesProperties], weights))
+        propertyY : ValueProperty = cast(ValueProperty, ValueProperty.weightedMean([value.propertyY for value in valuesProperties], weights))
+
+        return FullProperty(propertyX, propertyY)
+
+    @staticmethod
+    def getMultipleValues(properties : List["FullProperty"]) -> tuple[List[float], List[float]] :
+        values : List[tuple[float, float]] = [val.getValues() for val in properties]
+        a, b = zip(*values)
+        return list(a), list(b)

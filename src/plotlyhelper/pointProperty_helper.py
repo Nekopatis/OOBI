@@ -2,18 +2,8 @@ from typing import List, cast
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.colors as pc
-from helper import DisplayLineWithSimpleLerp
+from .helper import DisplayLineWithSimpleLerp
 from modifier.pointProperty import Point2D, PointProperty
-
-def SplitSimplePoints(points : List[Point2D]) -> tuple[List[float], List[float]]:
-    x = [coord for coord, _ in points]
-    y = [coord for  _, coord in points]
-    return x, y
-
-def getPointMember(properties : List[PointProperty], memberName : str) -> List[Point2D] : 
-    points = [getattr(pointProperty, memberName) for pointProperty in properties]
-    return [cast(Point2D, point) for point in points]
-
 
 def MergePointsAndMakeColors(
     centers : List[Point2D], 
@@ -35,7 +25,7 @@ def MergePointsAndMakeColors(
 
 
 def displayPoint2D(points : List[Point2D], colorsIndex : List[str], colors : List[str]) -> None :
-    x, y = SplitSimplePoints(points)
+    x, y = Point2D.splitSimplePoints(points)
     useUnitCircle : bool = all([point.length() <= 1.2 for point in points])
 
     if len(colors) != 0 :
@@ -65,7 +55,7 @@ def displayPoint2D(points : List[Point2D], colorsIndex : List[str], colors : Lis
 
 def displayPointsProperty(property0 : PointProperty, property1 : PointProperty, x : List[float], name : str) -> None :
     pointProperties : list[PointProperty] = [cast(PointProperty, PointProperty.lerp(property0, property1, x_)) for x_ in x]
-    centers, directions, finals, coefs = PointProperty.Scatter(pointProperties)
+    centers, directions, finals, coefs = PointProperty.scatter(pointProperties)
 
     points, colorsIndex, colors = MergePointsAndMakeColors(centers, directions, finals)
     displayPoint2D(points, colorsIndex, colors)
@@ -73,15 +63,15 @@ def displayPointsProperty(property0 : PointProperty, property1 : PointProperty, 
     #displayPointsPropertyProjection(x, centers, f"centers of {name}")
     displayPointsPropertyProjection(x, directions, f"directions of {name}")
     displayPointsPropertyProjection(x, finals, f"finals of {name}")
-    DisplayLineWithSimpleLerp(x, coefs, f"coefs of {name}")
+    DisplayLineWithSimpleLerp(x, coefs, f"coefs of {name}", name)
 
 
 def displayPointsPropertyProjection(x : List[float], points : List[Point2D], name : str) -> None :
-    x_, y_ = SplitSimplePoints(points)
+    x_, y_ = Point2D.splitSimplePoints(points)
     
-    DisplayLineWithSimpleLerp(x, x_, f"x value of {name}")
-    DisplayLineWithSimpleLerp(x, y_, f"y value of {name}")
+    DisplayLineWithSimpleLerp(x, x_, f"x value of {name}", name)
+    DisplayLineWithSimpleLerp(x, y_, f"y value of {name}", name)
 
 def displayPointsPropertyProjectionWithName(x : List[float], properties : List[PointProperty], memberName : str, name : str) -> None :
-    points : List[Point2D] = getPointMember(properties, memberName)
+    points : List[Point2D] = PointProperty.getPointMember(properties, memberName)
     displayPointsPropertyProjection(x, points, name)
