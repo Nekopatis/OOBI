@@ -69,6 +69,21 @@ class Point2D(SupportsLerp):
         x = [coord for coord, _ in points]
         y = [coord for  _, coord in points]
         return x, y
+    
+    @staticmethod
+    def mergePoints(
+        centers : List["Point2D"], 
+        directions : List["Point2D"], 
+        finals : List["Point2D"]
+    ) -> tuple[List["Point2D"], List[str]] :
+        points : List[Point2D] = centers + directions + finals
+        colorsIndex : List[str] = []
+
+        [colorsIndex.append("centers") for _ in centers]
+        [colorsIndex.append("directions") for _ in directions]
+        [colorsIndex.append("finals") for _ in finals]
+
+        return points, colorsIndex
 
 
 

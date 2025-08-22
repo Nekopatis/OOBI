@@ -5,20 +5,15 @@ import plotly.colors as pc
 from .helper import DisplayLineWithSimpleLerp
 from modifier.pointProperty import Point2D, PointProperty
 
-def MergePointsAndMakeColors(
+def mergePointsAndMakeColors(
     centers : List[Point2D], 
     directions : List[Point2D], 
     finals : List[Point2D]
 ) -> tuple[List[Point2D], List[str], List[str]] :
     assert len(centers) == len(directions) == len(finals), "Error in MergePointsAndMakeColors. Not all list are the same size."
 
-    points : List[Point2D] = centers + directions + finals
-    colorsIndex : List[str] = []
+    points, colorsIndex = Point2D.mergePoints(centers, directions, finals)
     colors : List[str] = [px.colors.qualitative.Plotly[1], px.colors.qualitative.Plotly[2], px.colors.qualitative.Plotly[3]]
-
-    [colorsIndex.append("centers") for _ in centers]
-    [colorsIndex.append("directions") for _ in directions]
-    [colorsIndex.append("finals") for _ in finals]
 
     return points, colorsIndex, colors
 
@@ -57,7 +52,7 @@ def displayPointsProperty(property0 : PointProperty, property1 : PointProperty, 
     pointProperties : list[PointProperty] = [cast(PointProperty, PointProperty.lerp(property0, property1, x_)) for x_ in x]
     centers, directions, finals, coefs = PointProperty.scatter(pointProperties)
 
-    points, colorsIndex, colors = MergePointsAndMakeColors(centers, directions, finals)
+    points, colorsIndex, colors = mergePointsAndMakeColors(centers, directions, finals)
     displayPoint2D(points, colorsIndex, colors)
 
     #displayPointsPropertyProjection(x, centers, f"centers of {name}")
