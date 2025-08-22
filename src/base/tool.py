@@ -87,3 +87,12 @@ def Dist(coord : List[float]) -> float :
         return abs(coord[0])
 
     return 0
+
+
+def easyLerp(val0 : LERP, val1 : LERP, coefs : List[float]) -> List[LERP] :
+    assert val0.__class__ == val1.__class__, f"Error in easyLerp. Not the same Type: {val0.__class__} != {val1.__class__}."
+    return [val0.lerp(val0, val1, coef) for coef in coefs]
+
+
+def transformValue(propertymodifier : PropertyModifier, values : List[float]) -> List[float] :
+    return [propertymodifier.transformValue(value) for value in values]
