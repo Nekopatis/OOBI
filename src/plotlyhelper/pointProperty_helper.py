@@ -2,7 +2,7 @@ from typing import List, cast
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.colors as pc
-from plotly_helper import DisplayLineWithSimpleLerp
+from helper import DisplayLineWithSimpleLerp
 from modifier.pointProperty import Point2D, PointProperty
 
 def SplitSimplePoints(points : List[Point2D]) -> tuple[List[float], List[float]]:
