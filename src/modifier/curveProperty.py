@@ -90,7 +90,7 @@ class CurveProperty(PropertyModifier):
             random.uniform(0, 2*math.pi),
             random.uniform(0.1, 0.9),
             math.sqrt(random.uniform(0, 50)),
-            random.uniform(0, 1),
+            random.uniform(0, 2),
             math.sqrt(random.uniform(0.5, 5)),
         )
     
