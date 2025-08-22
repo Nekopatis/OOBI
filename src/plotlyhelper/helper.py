@@ -37,7 +37,7 @@ def DisplayPropertyModifier(x : List[float], propertymodifier : PropertyModifier
 
 def DisplayValuePropertyLerp(x : List[float], property0 : ValueProperty, property1 : ValueProperty, name : str) -> None :
     lerped : List[ValueProperty] = easyLerp(property0, property1, x)
-    realValues = [lerpVal.transformValue() for lerpVal in lerped]
+    realValues =  ValueProperty.transformValues(lerped)
     DisplayLineWithSimpleLerp(x, realValues, f"graph of lerp of transfomed value from value property:  {name}", name)
 
 

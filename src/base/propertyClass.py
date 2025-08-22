@@ -40,6 +40,10 @@ class ValueProperty(ClassLerp):
         modifier = valuesProperties[0].modifier.weightedMean(modifiers, weights)
         
         return ValueProperty(baseValue, cast(PropertyModifier, modifier))
+    
+    @staticmethod 
+    def transformValues(values : List["ValueProperty"]) -> List[float] :
+        return [value.transformValue() for value in values]
 
 
 
