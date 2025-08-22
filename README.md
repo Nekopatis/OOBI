@@ -17,11 +17,11 @@ OOBI builds upon **classical interpolation techniques** (linear, quadratic, etc.
 
 OOBI is implemented in two different modes:
 
-### 1. Space Position
-- Values are interpolated using a *space* that defines the proximity to the bounds.  
+### 1. Point Position
+- Values are interpolated using points that defines the proximity to the bounds.  
 - This approach controls how much the interpolated result can diverge beyond the original range.
 
-### 2. Non-Linear Space
+### 2. Curved Space
 - Parameters are used to construct a function `float -> float` that is **not polynomial**.  
 - This creates a non-linear interpolation space where the output is determined by custom non-linear mappings.
 
