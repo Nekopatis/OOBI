@@ -1,6 +1,9 @@
-from typing import List
+from typing import List, TypeVar, cast
 from collections import Counter
+
 from base.propertyClass import FullProperty, ValueProperty
+
+T = TypeVar("T", int, float)
 
 class Bound :
     def __init__(self, bound1 : float, bound2 : float) -> None:
@@ -24,15 +27,34 @@ class Bound :
         return Bound(property0.transformValue(), property1.transformValue()).locationBound(values)
 
 
-def AnalyseOutOfBoundFullProperty(properties : List[FullProperty], property0 : FullProperty, property1 : FullProperty) -> dict[tuple[int, int], int] :
-        valuesX, valuesY = FullProperty.getMultipleValues(properties)
-        BoundX : List[int] = Bound.fromValueProperty(valuesX, property0.propertyX, property1.propertyX)
-        BoundY : List[int] = Bound.fromValueProperty(valuesY, property0.propertyY, property1.propertyY)
-        return Counter(zip(BoundX, BoundY))
+def analyseOutOfBoundFullProperty(properties : List[FullProperty], property0 : FullProperty, property1 : FullProperty) -> dict[tuple[int, int], int] :
+    valuesX, valuesY = FullProperty.getMultipleValues(properties)
+    BoundX : List[int] = Bound.fromValueProperty(valuesX, property0.propertyX, property1.propertyX)
+    BoundY : List[int] = Bound.fromValueProperty(valuesY, property0.propertyY, property1.propertyY)
+    return Counter(zip(BoundX, BoundY))
 
-def MergeAnalyse(mapping : dict[tuple[int, int], int]) -> dict[tuple[int, int], int] :
-    merged : dict[tuple[int, int], int] = {}
+def mergeAnalyse(mapping : dict[tuple[int, int], T]) -> dict[tuple[int, int], T] :
+    merged : dict[tuple[int, int], T] = {}
     for (i, j), count in mapping.items():
         key = (i, j) if i >= j else (j, i) # order: i >> j
         merged[key] = merged.get(key, 0) + count
     return merged
+
+def mappingToPercent(mapping : dict[tuple[int, int], int]) -> dict[tuple[int, int], float] :
+    total : float = float(sum(mapping.values()))
+    values : list[float] = [100.0 * float(val) / total for val in mapping.values()]
+    return {key: value for key, value in zip(mapping.keys(), values)}
+
+def mergeDict(dict1 : dict, dict2 : dict) -> dict :
+    return {k: dict1.get(k, 0) + dict2.get(k, 0) for k in set(dict1) | set(dict2)}
+
+def analyseOneFullProperty(property : FullProperty, lerpProperties : List[FullProperty], count : int) -> dict[tuple[int, int], int] :
+    iter : List[float] = [float(i) / float(count) for i in range(count+1)] 
+    ret : dict[tuple[int, int], int] = {}
+
+    for lerpProperty in lerpProperties :
+        lerped : List[FullProperty] = [cast(FullProperty, FullProperty.lerp(property, lerpProperty, i)) for i in iter]
+        tmp = analyseOutOfBoundFullProperty(lerped, property, lerpProperty)
+        ret = mergeDict(ret, tmp)
+    
+    return ret

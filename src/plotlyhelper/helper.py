@@ -4,7 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.colors as pc
 
-from analyzer.analyzer import AnalyseOutOfBoundFullProperty
+from analyzer.analyzer import analyseOutOfBoundFullProperty
 from .analyzer_helper import displayAppearanceMapping
 from base.propertyClass import FullProperty, ValueProperty
 from base.tool import PropertyModifier, easyLerp, transformValue
@@ -99,5 +99,5 @@ def MakeFullPropertyExample(iterator : List[float], property0 : FullProperty, pr
     DisplayValuePropertyLerp(iterator, property0.propertyX, property1.propertyX, "propertyX")
     DisplayValuePropertyLerp(iterator, property0.propertyY, property1.propertyY, "propertyY")
 
-    mapping : dict[tuple[int, int], int] = AnalyseOutOfBoundFullProperty(lerped, property0, property1)
+    mapping : dict[tuple[int, int], int] = analyseOutOfBoundFullProperty(lerped, property0, property1)
     displayAppearanceMapping(mapping, "example")
