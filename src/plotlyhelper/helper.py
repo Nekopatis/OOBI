@@ -78,7 +78,7 @@ def DisplayValuePropertyLerp(x : List[float], property0 : ValueProperty, propert
 
 
 def displayFullProperty(values : List[float], properties : List[FullProperty], name : str) -> None : 
-    x, y = FullProperty.getMultipleValues(properties)
+    x, y = FullProperty.getValuesXY(properties)
 
     fig = px.scatter(x=x, y=y, title=name, color=values, color_continuous_scale="Viridis")
     fig.add_trace(go.Scatter(

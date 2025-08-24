@@ -61,12 +61,20 @@ class FullProperty(ClassLerp) :
         return FullProperty(self.propertyX * weight, self.propertyY * weight)
     
     def print(self) :
-        self.propertyX.quickPrint()
-        self.propertyY.quickPrint()
+        [(print(name), subProperty.quickPrint()) for subProperty, name in self.getNamedProperties()]
         print()
 
-    def getValues(self) -> tuple[float, float] :
-        return self.propertyX.transformValue(), self.propertyY.transformValue()
+    def getValues(self) -> List[float] :
+        return [valueProperty.transformValue() for valueProperty in self.getProperties()]
+    
+    def getProperties(self) -> List[ValueProperty] :
+        return [subProperty for subProperty, _ in self.getNamedProperties()]
+    
+    def getNamedProperties(self) -> List[tuple[ValueProperty, str]] :
+        return [
+            (self.propertyX, "propertyX"),
+            (self.propertyY, "propertyY"),
+        ]
 
 
 
@@ -79,13 +87,23 @@ class FullProperty(ClassLerp) :
         assert all([value.__class__ == FullProperty for value in values]), "Error in FullProperty weightedMean. Not all value are a FullProperty."
         valuesProperties : List[FullProperty] = [cast(FullProperty, value) for value in values]
 
-        propertyX : ValueProperty = cast(ValueProperty, ValueProperty.weightedMean([value.propertyX for value in valuesProperties], weights))
-        propertyY : ValueProperty = cast(ValueProperty, ValueProperty.weightedMean([value.propertyY for value in valuesProperties], weights))
+        tmp : list[List[ValueProperty]] = [value.getProperties() for value in valuesProperties]
+        tmp = [list(val) for val in zip(*tmp)] # matrice transpose
+        properties : List[ValueProperty] = [cast(ValueProperty, ValueProperty.weightedMean(val, weights)) for val in tmp]
 
-        return FullProperty(propertyX, propertyY)
+        assert len(properties) >= 2, "Error in FullProperty weightedMean. FullProperty have less than 2 ValueProperty."
+        return FullProperty(properties[0], properties[1])
 
     @staticmethod
-    def getMultipleValues(properties : List["FullProperty"]) -> tuple[List[float], List[float]] :
-        values : List[tuple[float, float]] = [val.getValues() for val in properties]
-        a, b = zip(*values)
-        return list(a), list(b)
+    def getValuesXY(properties : List["FullProperty"]) -> tuple[List[float], List[float]] :
+        values : List[List[float]] = FullProperty.getAllValuesSplited(properties)
+        propertyX : List[float] = [] if len(values) < 1 else values[0]
+        propertyY : List[float] = [] if len(values) < 2 else values[1]
+        return propertyX, propertyY
+    
+    @staticmethod
+    def getAllValuesSplited(properties : List["FullProperty"]) -> List[List[float]] :
+        if len(properties) == 0 : 
+            return []
+        values : List[List[float]] = [val.getValues() for val in properties]
+        return [list(val) for val in zip(*values)] # matrice transpose

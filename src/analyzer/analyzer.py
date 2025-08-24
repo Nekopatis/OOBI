@@ -28,7 +28,7 @@ class Bound :
 
 
 def analyseOutOfBoundFullProperty(properties : List[FullProperty], property0 : FullProperty, property1 : FullProperty) -> dict[tuple[int, int], int] :
-    valuesX, valuesY = FullProperty.getMultipleValues(properties)
+    valuesX, valuesY = FullProperty.getValuesXY(properties)
     BoundX : List[int] = Bound.fromValueProperty(valuesX, property0.propertyX, property1.propertyX)
     BoundY : List[int] = Bound.fromValueProperty(valuesY, property0.propertyY, property1.propertyY)
     return Counter(zip(BoundX, BoundY))
