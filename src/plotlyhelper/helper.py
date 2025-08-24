@@ -96,8 +96,10 @@ def MakeFullPropertyExample(iterator : List[float], property0 : FullProperty, pr
     lerped = easyLerp(property0, property1, iterator)
     displayFullProperty(iterator, lerped, "lerped")
 
-    DisplayValuePropertyLerp(iterator, property0.propertyX, property1.propertyX, "propertyX")
-    DisplayValuePropertyLerp(iterator, property0.propertyY, property1.propertyY, "propertyY")
+    [DisplayValuePropertyLerp(iterator, subProperty0, subProperty1, name) 
+        for (subProperty0, name), subProperty1 
+        in zip(property0.getNamedProperties(), property1.getProperties())
+    ]
 
     mapping : dict[tuple[int, int], int] = analyseOutOfBoundFullProperty(lerped, property0, property1)
     displayAppearanceMapping(mapping, "example")
