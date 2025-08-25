@@ -30,21 +30,7 @@ class ListAnalyzerResult :
 
 class FullAnalyzerResult :
     def __init__(self) -> None:
-        self.jsp : List[ListAnalyzerResult] = []
-
-""" # same as : [list(c) for c in combinations(range(n), k)]
-def updateIndex(index : List[int]) -> bool :
-    assert len(index) > 1, "Error in updateIndex. Cannot incremente a list of a single item."
-    subIndex = len(index) - 1
-
-    index[subIndex] += 1
-    while subIndex > 0 and (index[subIndex] == len(index) or index[subIndex] >= index[subIndex-1]):
-        index[subIndex] = len(index) - subIndex
-        subIndex -= 1
-        index[subIndex] += 1
-
-    return subIndex == 0 and index[0] == len(index)
-"""
+        self.combinaison : List[ListAnalyzerResult] = []
 
 def makeCombinaison(properties : List[FullProperty], index : List[int], weights : List[int]) -> FullProperty :
     assert len(index) == len(weights), "Error in makeCombinaison. index and weights must be the same size."
@@ -92,7 +78,7 @@ def analyseIter(properties : List[FullProperty], quantityLerp : int) -> ListAnal
     for index in combinations(range(len(properties)), quantityLerp) :
         weights : list[int] = [1] * quantityLerp
         weights[-1] = 0
-        while updateWeight(weights, 100) :
+        while updateWeight(weights, 20) :
             fullProperty.append(makeCombinaison(properties, list(index), weights))
 
     return ListAnalyzerResult.makeAnalyse(fullProperty)
@@ -101,5 +87,5 @@ def analyseIter(properties : List[FullProperty], quantityLerp : int) -> ListAnal
 def analyzeProperties(properties : List[FullProperty]) -> FullAnalyzerResult:
     assert len(properties) > 1, "Error in analyzeProperties. Need at least 2 properties."
     ret = FullAnalyzerResult()
-    [ret.jsp.append(analyseIter(properties, i)) for i in range(1, len(properties))]
+    [(print(i), ret.combinaison.append(analyseIter(properties, i))) for i in range(1, len(properties) + 1)]
     return ret

@@ -1,6 +1,8 @@
+from typing import List
 import numpy as np
 import plotly.express as px
 from analyzer.analyzer import mappingToPercent, mergeAnalyse, T
+from analyzer.listanalyzer import FullAnalyzerResult, ListAnalyzerResult, Centile
 
 def displayMapping(mapping : dict[tuple[int, int], T], name : str) -> None :
     coords : list[int] = [-1, 0, 1]
@@ -31,3 +33,17 @@ def displayAppearanceMapping(mapping : dict[tuple[int, int], int], name : str) -
 
     mappingpercent = mergeAnalyse(mappingpercent)
     displayMapping(mappingpercent, f"merged {name}")
+
+
+def displayFullAnalyzerResultProperty(propertyResult : List[Centile]) -> None :
+    x = list(range(101)) * len(propertyResult)
+    y : list[float] = [val for centile in propertyResult for val in centile.centiles]
+    color : list[int] = [(id + 1) for id, centile in enumerate(propertyResult) for val in centile.centiles]
+
+    fig = px.line(x=x, y=y, color=color)
+    fig.show()
+
+def displayFullAnalyzerResult(result : FullAnalyzerResult) -> None :
+    values : List[List[Centile]] = [comb.valuePropertyCentiles for comb in result.combinaison]
+    values = [list(val) for val in zip(*values)]
+    [displayFullAnalyzerResultProperty(val) for val in values]
