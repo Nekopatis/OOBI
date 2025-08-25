@@ -21,9 +21,16 @@ OOBI is implemented in two different modes:
 - Values are interpolated using points that defines the proximity to the bounds.  
 - This approach controls how much the interpolated result can diverge beyond the original range.
 
+![plot](./image/newplot1.png)
+![plot](./image/newplot2.png)
+
 ### 2. Curved Space
 - Parameters are used to construct a function `float -> float` that is **not polynomial**.  
 - This creates a non-linear interpolation space where the output is determined by custom non-linear mappings.
+
+![plot](./image/newplot6.png)
+![plot](./image/newplot7.png)
+![plot](./image/newplot8.png)
 
 ---
 
