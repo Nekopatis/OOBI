@@ -86,11 +86,11 @@ class CurveProperty(PropertyModifier):
     @staticmethod
     def rnd() :
         return CurveProperty(
-            random.uniform(0, 100),
+            math.sqrt(random.uniform(0, 100)),
             random.uniform(0, 2*math.pi),
-            random.uniform(0.1, 0.9),
+            math.sqrt(random.uniform(0.1, 2.9)),
             math.sqrt(random.uniform(0, 50)),
-            random.uniform(0, 2),
+            math.sqrt(random.uniform(0, 5)),
             math.sqrt(random.uniform(0.5, 5)),
         )
     
