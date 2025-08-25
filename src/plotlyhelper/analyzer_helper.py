@@ -47,3 +47,20 @@ def displayFullAnalyzerResult(result : FullAnalyzerResult) -> None :
     values : List[List[Centile]] = [comb.valuePropertyCentiles for comb in result.combinaison]
     values = [list(val) for val in zip(*values)]
     [displayFullAnalyzerResultProperty(val) for val in values]
+
+
+def displayFullAnalyzerResultMap(result : List[tuple[float, float, int]]) -> None :
+    x, y, id = map(list, zip(*result))
+    id_str = [str(v) for v in id]
+
+    # fig = px.scatter(x=x, y=y, color=id_str, size_max=0.01)
+    # fig.show()
+
+    fig = px.violin(
+        x=id_str,
+        y=x,
+        color=id_str,
+        box=True,
+    )
+    fig.update_traces(spanmode="hard")
+    fig.show()
