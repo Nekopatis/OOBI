@@ -53,14 +53,15 @@ def displayFullAnalyzerResultMap(result : List[tuple[float, float, int]]) -> Non
     x, y, id = map(list, zip(*result))
     id_str = [str(v) for v in id]
 
-    # fig = px.scatter(x=x, y=y, color=id_str, size_max=0.01)
-    # fig.show()
+    def make1Value(y) :
+        fig = px.violin(
+            x=id_str,
+            y=y,
+            color=id_str,
+            box=True,
+        )
+        fig.update_traces(spanmode="hard")
+        fig.show()
 
-    fig = px.violin(
-        x=id_str,
-        y=x,
-        color=id_str,
-        box=True,
-    )
-    fig.update_traces(spanmode="hard")
-    fig.show()
+    make1Value(x)
+    make1Value(y)
